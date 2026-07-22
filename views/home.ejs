@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialConnect | Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<script>
+function previewPostImage(event) {
+    const input = event.target;
+    const preview = document.getElementById("postImagePreview");
+    const container = document.getElementById("postImagePreviewContainer");
+
+    if (input.files && input.files[0]) {
+        preview.src = URL.createObjectURL(input.files[0]);
+        container.style.display = "block";
+    }
+}
+
+function removePostImage() {
+    const input = document.getElementById("postImageInput");
+    const preview = document.getElementById("postImagePreview");
+    const container = document.getElementById("postImagePreviewContainer");
+
+    input.value = "";
+    preview.src = "";
+    container.style.display = "none";
+}
+</script>
+<body>
+
+<nav class="navbar">
+    <a href="/home" class="logo">Social<span>Connect</span></a>
+
+    <div class="nav-links">
+        <a href="/home">⌂ Home</a>
+        <a href="/profile/<%= user._id %>">◉ Profile</a>
+        <a href="/logout" class="logout-link">Logout</a>
+    </div>
+</nav>
+
+<div class="main-layout">
+
+    <aside class="sidebar">
+        <div class="profile-card">
+
+            <div class="profile-cover"></div>
+
+            <div class="avatar profile-avatar">
+    <% if (user.profileImage) { %>
+        <img src="<%= user.profileImage %>" class="avatar-image" alt="Profile">
+    <% } else { %>
+        <%= user.username.charAt(0).toUpperCase() %>
+    <% } %>
+</div>
+
+            <h3><%= user.username %></h3>
+            <p><%= user.bio %></p>
+
+            <div class="profile-stats">
+                <span>
+                    <strong><%= user.followers.length %></strong>
+                    Followers
+                </span>
+
+                <span>
+                    <strong><%= user.following.length %></strong>
+                    Following
+                </span>
+            </div>
+
+            <a href="/profile/<%= user._id %>" class="view-profile">
+                View Profile
+            </a>
+
+        </div>
+    </aside>
+
+    <main class="feed">
+
+        <div class="welcome-box">
+            <div>
+                <span class="welcome-label">YOUR COMMUNITY</span>
+                <h1>Hello, <%= user.username %> 👋</h1>
+                <p>Share ideas, connect with people and join the conversation.</p>
+            </div>
+        </div>
+
+        <div class="create-post">
+
+            <div class="create-heading">
+                <div class="small-avatar">
+    <% if (user.profileImage) { %>
+        <img src="<%= user.profileImage %>" class="avatar-image" alt="Profile">
+    <% } else { %>
+        <%= user.username.charAt(0).toUpperCase() %>
+    <% } %>
+</div>
+
+                <div>
+                    <h3>Create a post</h3>
+                    <p>Share something with your community</p>
+                </div>
+            </div>
+
+            <form action="/post"
+      method="POST"
+      enctype="multipart/form-data">
+                <textarea
+                    name="content"
+                    placeholder="What's on your mind, <%= user.username %>?"
+                    required
+                ></textarea>
+<div class="post-image-upload">
+
+    <label for="postImageInput" class="add-image-btn">
+        📷 Add Image
+    </label>
+
+    <input
+        type="file"
+        name="postImage"
+        accept="image/*"
+        id="postImageInput"
+        onchange="previewPostImage(event)"
+        hidden
+    >
+
+    <div id="postImagePreviewContainer" style="display: none;">
+        <img
+            id="postImagePreview"
+            alt="Post Preview"
+        >
+
+        <button
+            type="button"
+            onclick="removePostImage()"
+            class="remove-image-btn"
+        >
+            ✕ Remove
+        </button>
+    </div>
+
+</div>                <div class="post-submit-row">
+                    <span>✨ Share your thoughts</span>
+                    <button type="submit">Post Now</button>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="feed-title">
+            <h2>Latest Posts</h2>
+            <span>Community Feed</span>
+        </div>
+
+        <% posts.forEach(post => { %>
+            
+
+            <article class="post-card">
+<div class="post-owner-actions">
+
+    <% if (
+        post.user._id.toString() === user._id.toString()
+    ) { %>
+
+        <a
+            href="/edit-post/<%= post._id %>"
+            class="edit-post-btn"
+        >
+            ✏️ Edit
+        </a>
+
+        <form
+            action="/delete-post/<%= post._id %>"
+            method="POST"
+            onsubmit="return confirm('Are you sure you want to delete this post?')"
+        >
+            <button type="submit" class="delete-btn">
+                🗑 Delete
+            </button>
+        </form>
+
+    <% } %>
+
+</div>
+                <div class="post-user">
+
+                    <div class="small-avatar">
+    <% if (post.user.profileImage) { %>
+        <img src="<%= post.user.profileImage %>" class="avatar-image" alt="Profile">
+    <% } else { %>
+        <%= post.user.username.charAt(0).toUpperCase() %>
+    <% } %>
+</div>
+
+                    <div>
+                        <a href="/profile/<%= post.user._id %>">
+                            <strong><%= post.user.username %></strong>
+                        </a>
+
+                        <small>
+                            <%= post.createdAt.toLocaleString() %>
+                        </small>
+                    </div>
+
+                </div>
+
+                <p class="post-content"><%= post.content %></p>
+<% if (post.image) { %>
+
+    <div class="post-image-container">
+        <img
+            src="<%= post.image %>"
+            alt="Post Image"
+            class="post-image"
+        >
+    </div>
+
+<% } %>
+                <div class="post-actions">
+
+                    <form action="/like/<%= post._id %>" method="POST">
+                        <button class="action-button">
+                            ♡ <%= post.likes.length %> Likes
+                        </button>
+                    </form>
+
+                    <span>💬 <%= post.comments.length %> Comments</span>
+
+                </div>
+
+                <% if (post.comments.length > 0) { %>
+
+                    <div class="comments">
+
+                        <% post.comments.forEach(comment => { %>
+                            <p>
+                                <strong><%= comment.username %></strong>
+                                <span><%= comment.text %></span>
+                            </p>
+                        <% }) %>
+
+                    </div>
+
+                <% } %>
+
+                <form
+                    action="/comment/<%= post._id %>"
+                    method="POST"
+                    class="comment-form"
+                >
+                    <input
+                        type="text"
+                        name="text"
+                        placeholder="Write a comment..."
+                        required
+                    >
+
+                    <button type="submit">Send</button>
+                </form>
+
+            </article>
+
+        <% }) %>
+
+    </main>
+
+    <aside class="people-sidebar">
+
+        <div class="people-card">
+
+            <div class="people-heading">
+                <h3>Discover People</h3>
+                <span>Connect</span>
+            </div>
+
+            <% users.forEach(person => { %>
+
+                <div class="person">
+
+                    <div class="small-avatar">
+    <% if (person.profileImage) { %>
+        <img src="<%= person.profileImage %>" class="avatar-image" alt="Profile">
+    <% } else { %>
+        <%= person.username.charAt(0).toUpperCase() %>
+    <% } %>
+</div>
+
+                    <div class="person-info">
+                        <strong><%= person.username %></strong>
+
+                        <a href="/profile/<%= person._id %>">
+                            View profile
+                        </a>
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    </aside>
+
+</div>
+
+</body>
+</html>

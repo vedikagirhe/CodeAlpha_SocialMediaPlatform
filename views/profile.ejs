@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= profileUser.username %> | SocialConnect</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="/home" class="logo">Social<span>Connect</span></a>
+
+    <div class="nav-links">
+        <a href="/home">⌂ Home</a>
+        <a href="/profile/<%= currentUser._id %>">◉ My Profile</a>
+        <a href="/logout" class="logout-link">Logout</a>
+    </div>
+</nav>
+
+<div class="profile-page">
+
+    <section class="profile-header">
+
+        <div class="profile-banner"></div>
+
+        <div class="profile-main">
+
+            <div class="large-avatar">
+
+    <% if (profileUser.profileImage) { %>
+
+        <img
+            src="<%= profileUser.profileImage %>"
+            alt="Profile Picture"
+            class="profile-image"
+        >
+
+    <% } else { %>
+
+        <%= profileUser.username.charAt(0).toUpperCase() %>
+
+    <% } %>
+
+</div>
+
+            <h1><%= profileUser.username %></h1>
+
+            <p class="profile-bio">
+                <%= profileUser.bio %>
+            </p>
+
+            <div class="profile-stats">
+
+                <span>
+                    <strong><%= profileUser.followers.length %></strong>
+                    Followers
+                </span>
+
+                <span>
+                    <strong><%= profileUser.following.length %></strong>
+                    Following
+                </span>
+
+                <span>
+                    <strong><%= posts.length %></strong>
+                    Posts
+                </span>
+
+            </div>
+
+            <% if (
+                currentUser._id.toString() ===
+                profileUser._id.toString()
+            ) { %>
+
+                <a href="/edit-profile" class="edit-profile-button">
+                    ✎ Edit Profile
+                </a>
+
+            <% } else { %>
+
+                <form
+                    action="/follow/<%= profileUser._id %>"
+                    method="POST"
+                >
+                    <button class="follow-button">
+                        <%= currentUser.following.some(
+                            id => id.toString() === profileUser._id.toString()
+                        ) ? "Unfollow" : "+ Follow" %>
+                    </button>
+                </form>
+
+            <% } %>
+
+        </div>
+
+    </section>
+
+    <div class="profile-posts">
+
+        <div class="profile-section-title">
+            <h2>Posts</h2>
+            <span><%= posts.length %> published</span>
+        </div>
+
+        <% if (posts.length === 0) { %>
+
+            <div class="empty-message">
+                <h3>No posts yet</h3>
+                <p>Posts shared by this user will appear here.</p>
+            </div>
+
+        <% } %>
+
+        <% posts.forEach(post => { %>
+
+            <article class="post-card">
+
+                <div class="post-user">
+
+                    <div class="small-avatar">
+                        <%= profileUser.username.charAt(0).toUpperCase() %>
+                    </div>
+
+                    <div>
+                        <strong><%= profileUser.username %></strong>
+
+                        <small>
+                            <%= post.createdAt.toLocaleString() %>
+                        </small>
+                    </div>
+
+                </div>
+
+                <p class="post-content">
+                    <%= post.content %>
+                </p>
+
+                <div class="post-actions">
+
+                    <span>♡ <%= post.likes.length %> Likes</span>
+
+                    <span>
+                        💬 <%= post.comments.length %> Comments
+                    </span>
+
+                </div>
+
+                <% if (
+                    currentUser._id.toString() ===
+                    profileUser._id.toString()
+                ) { %>
+
+                    <form
+                        action="/delete-post/<%= post._id %>"
+                        method="POST"
+                        onsubmit="return confirm('Delete this post?')"
+                    >
+                        <button type="submit" class="delete-button">
+                            🗑 Delete Post
+                        </button>
+                    </form>
+
+                <% } %>
+
+            </article>
+
+        <% }) %>
+
+    </div>
+
+</div>
+
+</body>
+</html>

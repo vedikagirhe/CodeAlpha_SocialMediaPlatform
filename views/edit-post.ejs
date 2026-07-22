@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Post | SocialConnect</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <h2>Social<span>Connect</span></h2>
+
+    <div class="nav-links">
+        <a href="/home">Home</a>
+    </div>
+</nav>
+
+<div class="edit-post-page">
+
+    <div class="edit-post-card">
+
+        <div class="edit-post-icon">✏️</div>
+
+        <h1>Edit Post</h1>
+
+        <p>Update your thoughts and share them with your community.</p>
+
+        <form action="/edit-post/<%= post._id %>" method="POST">
+
+            <textarea
+                name="content"
+                rows="7"
+                required
+            ><%= post.content %></textarea>
+
+            <div class="edit-post-actions">
+
+                <a href="/home" class="cancel-btn">
+                    Cancel
+                </a>
+
+                <button type="submit" class="save-post-btn">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

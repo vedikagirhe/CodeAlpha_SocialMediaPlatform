@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | SocialConnect</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+<div class="auth-page">
+
+    <div class="auth-container">
+
+        <div class="auth-left">
+
+            <div class="auth-logo">
+                SocialConnect
+            </div>
+
+            <h1>
+                Connect. Share.<br>
+                Grow Together.
+            </h1>
+
+            <p>
+                Connect with people, share your thoughts
+                and discover new stories.
+            </p>
+
+        </div>
+
+        <div class="auth-right">
+
+            <h2>Welcome Back 👋</h2>
+
+            <p class="auth-subtitle">
+                Login to continue your journey
+            </p>
+
+            <% if (error) { %>
+
+                <div class="auth-error">
+                    <%= error %>
+                </div>
+
+            <% } %>
+
+            <form action="/login"
+                  method="POST"
+                  class="auth-form">
+
+                <label>Email Address</label>
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                >
+                    Login
+                </button>
+
+            </form>
+
+            <p class="auth-footer">
+
+                Don't have an account?
+
+                <a href="/register">
+                    Create Account
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
